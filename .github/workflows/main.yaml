@@ -3,19 +3,39 @@ on:
   workflow_dispatch:
     inputs:
       prs:
-        description: 'List of Additions, example: ["Added foo", "Added bar"]'
+        description: 'List of Additions, example: pr-1-url,pr-2-url'
         required: true
-        default: '[]'
+        default: ''
 
 jobs:
   validate:
+    permissions: read-all
+
     runs-on: ubuntu-latest
+    container:
+      image: python:3.10-alpine
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     outputs:
       prs: ${{ steps.list_prs.outputs.prs }}
-    # Build
     steps:
-      - id: list_prs
-        run: echo 'prs=${{ inputs.prs }}' >> "$GITHUB_OUTPUT"
+      - name: Add Git
+        run: apk add git --no-cache
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+      
+      - name: Install Deps
+        run: pip3 install -r ./ci-scripts/requirements.txt
+
+      - name: Prepare Manifest
+        id: list_prs
+        run: ./ci-scripts/main.py -p '${{ inputs.prs }}' -m manifest.xml >> "$GITHUB_OUTPUT"
+
+      - name: Build
+        run: cat new-manifest.xml
 
   approve:
     runs-on: ubuntu-latest

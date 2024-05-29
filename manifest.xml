@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+
+  <remote name="origin"
+          fetch="ssh://git@github.com/yurii-holyk/"
+          review="https://github.com/yurii-holyk/" />
+
+  <default remote="origin"
+           sync-j="8"
+           revision="feature" />
+
+  <project path="Test-Repo-2" name="Test-Repo-2" />
+  <project path="Test-Repo" name="Test-Repo" />
+  <project path="component_3_repo" name="component_3_repo" />
+  <project path="component_4_repo" name="component_4_repo" />
+  <project path="component_5_repo" name="component_5_repo" />
+
+  <project path="manifest" name="manifest" />
+
+  <project path="build" name="build">
+    <linkfile dest="build.sh" src="build.sh" />
+  </project>
+
+</manifest>
